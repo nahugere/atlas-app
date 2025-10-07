@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter/services.dart';
+import 'package:shimmer_animation/shimmer_animation.dart';
 
 class TapWithHapticFeedback extends StatelessWidget {
   final VoidCallback onTap;
@@ -112,16 +113,90 @@ class ASearchBar extends StatelessWidget {
   }
 }
 
+class ATileShimmer extends StatelessWidget {
+  const ATileShimmer({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.only(left: 20),
+      padding: EdgeInsets.only(left: 10, top: 16.5, bottom: 20, right: 16),
+      width: MediaQuery.of(context).size.width,
+      decoration: BoxDecoration(
+          border:
+              Border(top: BorderSide(color: Colors.grey.shade300, width: 1.5))),
+      child: Row(
+        spacing: 20,
+        children: [
+          Expanded(
+            child: Column(
+              spacing: 4,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Shimmer(
+                  color: Colors.grey.shade600,
+                  child: Container(
+                    width: double.infinity,
+                    height: 16,
+                    decoration: BoxDecoration(
+                        color: Colors.grey.shade200,
+                        borderRadius: BorderRadius.all(Radius.circular(5))),
+                  ),
+                ),
+                Shimmer(
+                  color: Colors.grey.shade600,
+                  child: Container(
+                    width: 200,
+                    height: 16,
+                    decoration: BoxDecoration(
+                        color: Colors.grey.shade200,
+                        borderRadius: BorderRadius.all(Radius.circular(5))),
+                  ),
+                ),
+                SizedBox(
+                  height: 4,
+                ),
+                Shimmer(
+                  color: Colors.grey.shade600,
+                  child: Container(
+                    width: 50,
+                    height: 10,
+                    decoration: BoxDecoration(
+                        color: Colors.grey.shade200,
+                        borderRadius: BorderRadius.all(Radius.circular(5))),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Shimmer(
+            color: Colors.grey.shade600,
+            child: Container(
+              height: 55,
+              width: 55,
+              decoration: BoxDecoration(
+                  color: Colors.grey.shade200,
+                  borderRadius: BorderRadius.all(Radius.circular(4))),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+}
+
 class ATile extends StatelessWidget {
   final String title;
-  final String datePublished;
-  final String author;
+  final String readTime;
+  final String source;
+  final String img;
   final Function onTap;
   const ATile(
       {super.key,
       required this.title,
-      required this.datePublished,
-      required this.author,
+      required this.readTime,
+      required this.source,
+      required this.img,
       required this.onTap});
 
   @override
@@ -141,6 +216,7 @@ class ATile extends StatelessWidget {
           children: [
             Expanded(
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
                 spacing: 8,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -154,7 +230,7 @@ class ATile extends StatelessWidget {
                     children: [
                       Expanded(
                           child: Text(
-                        "$datePublished • $author",
+                        readTime == "" ? "$source" : "$source | $readTime",
                         style: GoogleFonts.workSans(
                             fontSize: 13, color: Color(0xFF878787)),
                       )),
@@ -169,11 +245,23 @@ class ATile extends StatelessWidget {
               ),
             ),
             Container(
+              alignment: Alignment.center,
               height: 55,
               width: 55,
-              decoration: BoxDecoration(
-                  color: Colors.grey,
-                  borderRadius: BorderRadius.all(Radius.circular(4))),
+              child: img == ""
+                  ? Text("${source[0]}",
+                      style: GoogleFonts.dmSerifText(fontSize: 30))
+                  : Container(),
+              decoration: img == ""
+                  ? BoxDecoration(
+                      color: CupertinoTheme.of(context).scaffoldBackgroundColor,
+                      border: BoxBorder.all(color: Colors.black, width: 2),
+                      borderRadius: BorderRadius.all(Radius.circular(15)))
+                  : BoxDecoration(
+                      color: Colors.grey,
+                      image: DecorationImage(
+                          image: NetworkImage(img), fit: BoxFit.cover),
+                      borderRadius: BorderRadius.all(Radius.circular(6))),
             )
           ],
         ),

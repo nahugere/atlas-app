@@ -37,6 +37,7 @@ dependencies:
   google_fonts: ^6.3.0
   flutter_svg: ^2.2.0
   shared_preferences: ^2.5.3
+  shimmer_animation: ^2.2.2
   http: 
 
 dev_dependencies:

@@ -33,16 +33,18 @@ class _SavedPageState extends State<SavedPage> {
       SliverList(
         delegate: SliverChildBuilderDelegate(
           (context, index) => ATile(
-            onTap: () {
-              Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
-                return DetailPage();
-              }));
-            },
-            title:
-                "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum ipsum risus asdad",
-            datePublished: "August 19, 2025",
-            author: "Author $index",
-          ),
+              onTap: () {
+                Navigator.of(context)
+                    .push(CupertinoPageRoute(builder: (context) {
+                  return DetailPage();
+                }));
+              },
+              title:
+                  "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum ipsum risus asdad",
+              readTime: "August 19, 2025",
+              source: "Author $index",
+              img:
+                  "https://upload.wikimedia.org/wikipedia/en/thumb/8/80/Wikipedia-logo-v2.svg/500px-Wikipedia-logo-v2.svg.png"),
           childCount: 30,
         ),
       ),

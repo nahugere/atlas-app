@@ -1,4 +1,5 @@
 import 'package:atlas/pages/detailpage.dart';
+import 'package:atlas/services/webService.dart';
 import 'package:atlas/widgets/widgets.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -15,6 +16,7 @@ class _HomePageState extends State<HomePage>
     with AutomaticKeepAliveClientMixin<HomePage> {
   @override
   bool get wantKeepAlive => true;
+  final WebService _webService = WebService();
 
   @override
   Widget build(BuildContext context) {
@@ -81,23 +83,52 @@ class _HomePageState extends State<HomePage>
             ),
           ),
         ),
-        SliverList(
-          key: PageStorageKey('homePage'),
-          delegate: SliverChildBuilderDelegate(
-            (context, index) => ATile(
-              onTap: () {
-                Navigator.of(context)
-                    .push(CupertinoPageRoute(builder: (context) {
-                  return DetailPage();
-                }));
-              },
-              title:
-                  "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum ipsum risus asdad",
-              datePublished: "August 19, 2025",
-              author: "Author $index",
-            ),
-            childCount: 30,
-          ),
+        FutureBuilder(
+          future: _webService.getHomeFeed(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return SliverList(
+                  key: PageStorageKey("homepageshimmer"),
+                  delegate: SliverChildBuilderDelegate((context, index) {
+                    return ATileShimmer();
+                  }, childCount: 10));
+            } else if (snapshot.hasError) {
+              return SliverToBoxAdapter(
+                child: Center(child: Text("Error loading feed")),
+              );
+            } else {
+              // Use SliverList directly
+              return SliverList(
+                key: PageStorageKey("homepage"),
+                delegate: SliverChildBuilderDelegate(
+                  (context, index) {
+                    if (index == (snapshot.data!.length - 1)) {
+                      return Container(
+                        height: 100,
+                      );
+                    }
+                    return ATile(
+                      onTap: () {
+                        Navigator.of(context)
+                            .push(CupertinoPageRoute(builder: (context) {
+                          return DetailPage();
+                        }));
+                      },
+                      title: snapshot.data?[index]["title"],
+                      readTime: snapshot.data?[index]["readTime"] == null
+                          ? ""
+                          : "${snapshot.data?[index]["readTime"].toStringAsFixed(0)} Min read",
+                      source: snapshot.data?[index]["source"],
+                      img: snapshot.data?[index]["img"] == null
+                          ? ""
+                          : snapshot.data?[index]["img"],
+                    );
+                  },
+                  childCount: snapshot.data?.length,
+                ),
+              );
+            }
+          },
         ),
       ],
     );
@@ -192,3 +223,30 @@ class HeaderDelegate extends SliverPersistentHeaderDelegate {
   @override
   bool shouldRebuild(SliverPersistentHeaderDelegate oldDelegate) => true;
 }
+
+
+// return ListView.builder(
+//                     itemCount: snapshot.data.length,
+//                     itemBuilder: (context, index) {},
+//                   );
+
+//                   (
+//                     key: PageStorageKey('homePage'),
+//                     delegate: SliverChildBuilderDelegate(
+//                       (context, index) {
+//                         return ATile(
+//                           onTap: () {
+//                             Navigator.of(context)
+//                                 .push(CupertinoPageRoute(builder: (context) {
+//                               return DetailPage();
+//                             }));
+//                           },
+//                           title:
+//                               "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum ipsum risus asdad",
+//                           datePublished: "August 19, 2025",
+//                           author: "Author $index",
+//                         );
+//                       },
+//                       childCount: 30,
+//                     ),
+//                   );
