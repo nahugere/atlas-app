@@ -4,6 +4,28 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class WebService {
+  Future<List> getFeed(String category) async {
+    if (category == "All") {
+      var feed = await getHomeFeed();
+      return feed;
+    }
+    print("Here $category");
+    var feed = await getCategoryFeed(category);
+    return feed;
+  }
+
+  Future<List> getCategoryFeed(String category) async {
+    final uri =
+        Uri.parse("http://localhost:8000/a/category/?category=$category");
+    http.Response response = await http.get(uri);
+
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      return json.decode(response.body);
+    } else {
+      return [];
+    }
+  }
+
   Future<List> getHomeFeed() async {
     final prefs = await SharedPreferences.getInstance();
 
@@ -18,6 +40,8 @@ class WebService {
 
     if (response.statusCode == 200 || response.statusCode == 201) {
       var jsonData = json.decode(response.body);
+      // TODO: Implement page incrementation here
+      // await prefs.setInt("pnum", pnum + 1);
       return jsonData["data"];
     } else {
       return [];

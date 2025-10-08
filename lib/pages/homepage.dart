@@ -17,6 +17,17 @@ class _HomePageState extends State<HomePage>
   @override
   bool get wantKeepAlive => true;
   final WebService _webService = WebService();
+  int _cIndex = 0;
+  final List<String> _categories = [
+    "All",
+    "Technology",
+    "Business",
+    "Politics",
+    "Philosophy",
+    "History",
+    "Sports",
+    "Art"
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -39,52 +50,23 @@ class _HomePageState extends State<HomePage>
               padding: EdgeInsets.only(left: 19, top: 5, bottom: 4),
               scrollDirection: Axis.horizontal,
               children: [
-                ATabBar(
-                  onTap: () {},
-                  val: "All",
-                  selected: true,
-                ),
-                ATabBar(
-                  onTap: () {},
-                  val: "Tech",
-                  selected: false,
-                ),
-                ATabBar(
-                  onTap: () {},
-                  val: "Education",
-                  selected: false,
-                ),
-                ATabBar(
-                  onTap: () {},
-                  val: "Politics",
-                  selected: false,
-                ),
-                ATabBar(
-                  onTap: () {},
-                  val: "Sports",
-                  selected: false,
-                ),
-                ATabBar(
-                  onTap: () {},
-                  val: "History",
-                  selected: false,
-                ),
-                ATabBar(
-                  onTap: () {},
-                  val: "Art",
-                  selected: false,
-                ),
-                ATabBar(
-                  onTap: () {},
-                  val: "Philosophy",
-                  selected: false,
-                ),
+                for (var i = 0; i < _categories.length; i++)
+                  ATabBar(
+                      selected: i == _cIndex,
+                      val: _categories[i],
+                      onTap: () {
+                        setState(() {
+                          _cIndex = i;
+                        });
+                        // Future.microtask(() {});
+                        // WidgetsBinding.instance.addPostFrameCallback((_) {});
+                      }),
               ],
             ),
           ),
         ),
         FutureBuilder(
-          future: _webService.getHomeFeed(),
+          future: _webService.getFeed(_categories[_cIndex]),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return SliverList(

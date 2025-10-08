@@ -32,10 +32,10 @@ class TapWithHapticFeedback extends StatelessWidget {
   }
 }
 
-class ATabBar extends StatelessWidget {
+class ATabBar extends StatefulWidget {
   final bool selected;
   final String val;
-  final Function onTap;
+  final GestureTapCallback onTap;
   const ATabBar(
       {super.key,
       required this.selected,
@@ -43,22 +43,27 @@ class ATabBar extends StatelessWidget {
       required this.onTap});
 
   @override
+  State<ATabBar> createState() => _ATabBarState();
+}
+
+class _ATabBarState extends State<ATabBar> {
+  @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onTap(),
+      onTap: widget.onTap,
       child: AnimatedContainer(
-          duration: Duration(microseconds: 100),
+          duration: Duration(microseconds: 500),
           decoration: BoxDecoration(
               border: Border(
-                  bottom: selected
+                  bottom: widget.selected
                       ? BorderSide(color: Color(0xFF1D7D53), width: 2)
                       : BorderSide.none)),
           margin: EdgeInsets.only(left: 10, right: 10, bottom: 9),
           child: Text(
-            val,
+            widget.val,
             style: GoogleFonts.workSans(
                 fontSize: 15,
-                color: selected ? Color(0xFF1D7D53) : Color(0xFF727272)),
+                color: widget.selected ? Color(0xFF1D7D53) : Color(0xFF727272)),
           )),
     );
   }
@@ -190,7 +195,7 @@ class ATile extends StatelessWidget {
   final String readTime;
   final String source;
   final String img;
-  final Function onTap;
+  final GestureTapCallback onTap;
   const ATile(
       {super.key,
       required this.title,
@@ -202,9 +207,7 @@ class ATile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        onTap();
-      },
+      onTap: onTap,
       child: Container(
         margin: EdgeInsets.only(left: 20),
         padding: EdgeInsets.only(left: 10, top: 16.5, bottom: 20, right: 16),
@@ -234,11 +237,11 @@ class ATile extends StatelessWidget {
                         style: GoogleFonts.workSans(
                             fontSize: 13, color: Color(0xFF878787)),
                       )),
-                      Text(
-                        "Summarize",
-                        style: GoogleFonts.workSans(
-                            fontSize: 13, color: Color(0xFF878787)),
-                      )
+                      // Text(
+                      //   "Summarize",
+                      //   style: GoogleFonts.workSans(
+                      //       fontSize: 13, color: Color(0xFF878787)),
+                      // )
                     ],
                   )
                 ],
