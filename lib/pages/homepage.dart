@@ -4,6 +4,7 @@ import 'package:atlas/widgets/widgets.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -58,8 +59,6 @@ class _HomePageState extends State<HomePage>
                         setState(() {
                           _cIndex = i;
                         });
-                        // Future.microtask(() {});
-                        // WidgetsBinding.instance.addPostFrameCallback((_) {});
                       }),
               ],
             ),
@@ -89,22 +88,24 @@ class _HomePageState extends State<HomePage>
                         height: 100,
                       );
                     }
-                    return ATile(
-                      onTap: () {
-                        Navigator.of(context)
-                            .push(CupertinoPageRoute(builder: (context) {
-                          return DetailPage();
-                        }));
-                      },
-                      title: snapshot.data?[index]["title"],
-                      readTime: snapshot.data?[index]["readTime"] == null
-                          ? ""
-                          : "${snapshot.data?[index]["readTime"].toStringAsFixed(0)} Min read",
-                      source: snapshot.data?[index]["source"],
-                      img: snapshot.data?[index]["img"] == null
-                          ? ""
-                          : snapshot.data?[index]["img"],
-                    );
+                    if (snapshot.data?[index].runtimeType == Map) {
+                      return ATile(
+                        onTap: () {
+                          Navigator.of(context)
+                              .push(CupertinoPageRoute(builder: (context) {
+                            return DetailPage();
+                          }));
+                        },
+                        title: snapshot.data?[index]["title"],
+                        readTime: snapshot.data?[index]["readTime"] == null
+                            ? ""
+                            : "${snapshot.data?[index]["readTime"].toStringAsFixed(0)} Min read",
+                        source: snapshot.data?[index]["source"],
+                        img: snapshot.data?[index]["img"] == null
+                            ? ""
+                            : snapshot.data?[index]["img"],
+                      );
+                    }
                   },
                   childCount: snapshot.data?.length,
                 ),
@@ -126,6 +127,8 @@ class HeaderDelegate extends SliverPersistentHeaderDelegate {
 
   @override
   Widget build(BuildContext context, double shrinkOffset, bool overlaps) {
+    DateTime now = DateTime.now();
+    String date = DateFormat('MMMM d, yyyy').format(now);
     final progress = (shrinkOffset / (maxExtent - minExtent)).clamp(0.0, 1.0);
 
     return Container(
@@ -150,7 +153,7 @@ class HeaderDelegate extends SliverPersistentHeaderDelegate {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              "August 19, 2025",
+                              date,
                               style: GoogleFonts.workSans(
                                   height: 1.4,
                                   fontSize: 17,
