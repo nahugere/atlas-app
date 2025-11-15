@@ -15,7 +15,7 @@ class _DetailPageState extends State<DetailPage> {
     return CupertinoPageScaffold(
         navigationBar: CupertinoNavigationBar(
           backgroundColor: CupertinoTheme.of(context).scaffoldBackgroundColor,
-          automaticBackgroundVisibility: false,
+          automaticBackgroundVisibility: true,
           leading: GestureDetector(
             onTap: () {
               Navigator.pop(context);
@@ -72,6 +72,14 @@ class _DetailPageState extends State<DetailPage> {
                             spacing: 3,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
+                              Text(
+                                  "Huawei Corporation (\”Huawei\” sometimes stylized as \”HUAWEI\”;  HWAH-way; Chinese: 华为; pinyin: ) is a Chinese multinational corporation and technology company headquartered in Longgang, Shenzhen, Guangdong. Its main product lines include telecommunications equipment, consumer electronics, electric vehicle autonomous driving systems, and rooftop solar power",
+                                  textAlign: TextAlign.justify,
+                                  style: GoogleFonts.workSans(
+                                      color: Color(0xFF717171),
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w500)),
+                              Padding(padding: EdgeInsets.only(top: 10)),
                               Text("Source: WikiPedia",
                                   style: GoogleFonts.workSans(
                                       fontSize: 13,
@@ -80,22 +88,14 @@ class _DetailPageState extends State<DetailPage> {
                                   style: GoogleFonts.workSans(
                                       fontSize: 13,
                                       fontWeight: FontWeight.w500)),
-                              Row(
-                                children: [
-                                  Text("Contributors: ",
-                                      style: GoogleFonts.workSans(
-                                          fontSize: 13,
-                                          fontWeight: FontWeight.w500)),
-                                ],
-                              ),
-                              Padding(padding: EdgeInsets.only(top: 10)),
-                              Text(
-                                  "Huawei Corporation (\”Huawei\” sometimes stylized as \”HUAWEI\”;  HWAH-way; Chinese: 华为; pinyin: ) is a Chinese multinational corporation and technology company headquartered in Longgang, Shenzhen, Guangdong. Its main product lines include telecommunications equipment, consumer electronics, electric vehicle autonomous driving systems, and rooftop solar power",
-                                  textAlign: TextAlign.justify,
-                                  style: GoogleFonts.workSans(
-                                      color: Color(0xFF717171),
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.w500)),
+                              // Row(
+                              //   children: [
+                              //     Text("Contributors: ",
+                              //         style: GoogleFonts.workSans(
+                              //             fontSize: 13,
+                              //             fontWeight: FontWeight.w500)),
+                              //   ],
+                              // ),
                               Padding(padding: EdgeInsets.only(top: 24)),
                             ],
                           ),
@@ -129,7 +129,7 @@ class _DetailPageState extends State<DetailPage> {
                             ),
                             // Article
                             Container(
-                              margin: EdgeInsets.only(right: 5),
+                              margin: EdgeInsets.only(right: 6),
                               width: 170,
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,

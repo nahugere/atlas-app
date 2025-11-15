@@ -53,6 +53,15 @@ class _MainPageState extends State<MainPage> {
               width: MediaQuery.of(context).size.width,
               height: 60 + MediaQuery.of(context).padding.bottom,
               color: CupertinoTheme.of(context).scaffoldBackgroundColor,
+              // decoration: BoxDecoration(
+              //     gradient: LinearGradient(
+              //         begin: Alignment.topCenter,
+              //         end: Alignment.bottomCenter,
+              //         colors: [
+              //       Color.fromARGB(0, 245, 245, 245),
+              //       Color(0xffF5F5F5),
+              //       Color(0xffF5F5F5)
+              //     ])),
               padding: EdgeInsets.only(
                   bottom: 17 + MediaQuery.of(context).padding.bottom,
                   top: 10,

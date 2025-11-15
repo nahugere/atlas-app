@@ -64,6 +64,7 @@ class _HomePageState extends State<HomePage>
             ),
           ),
         ),
+        // TODO: Cache received data
         FutureBuilder(
           future: _webService.getFeed(_categories[_cIndex]),
           builder: (context, snapshot) {
@@ -88,24 +89,22 @@ class _HomePageState extends State<HomePage>
                         height: 100,
                       );
                     }
-                    if (snapshot.data?[index].runtimeType == Map) {
-                      return ATile(
-                        onTap: () {
-                          Navigator.of(context)
-                              .push(CupertinoPageRoute(builder: (context) {
-                            return DetailPage();
-                          }));
-                        },
-                        title: snapshot.data?[index]["title"],
-                        readTime: snapshot.data?[index]["readTime"] == null
-                            ? ""
-                            : "${snapshot.data?[index]["readTime"].toStringAsFixed(0)} Min read",
-                        source: snapshot.data?[index]["source"],
-                        img: snapshot.data?[index]["img"] == null
-                            ? ""
-                            : snapshot.data?[index]["img"],
-                      );
-                    }
+                    return ATile(
+                      onTap: () {
+                        Navigator.of(context)
+                            .push(CupertinoPageRoute(builder: (context) {
+                          return DetailPage();
+                        }));
+                      },
+                      title: snapshot.data?[index]["title"],
+                      readTime: snapshot.data?[index]["readTime"] == null
+                          ? ""
+                          : "${snapshot.data?[index]["readTime"].toStringAsFixed(0)} Min read",
+                      source: snapshot.data?[index]["source"],
+                      img: snapshot.data?[index]["img"] == null
+                          ? ""
+                          : snapshot.data?[index]["img"],
+                    );
                   },
                   childCount: snapshot.data?.length,
                 ),
