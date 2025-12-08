@@ -1,7 +1,9 @@
 import 'package:atlas/services/webService.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class DetailPage extends StatefulWidget {
   final String title;
@@ -67,147 +69,158 @@ class _DetailPageState extends State<DetailPage> {
               child: FutureBuilder(
                   future: _webService.getDetailFeed(
                       widget.source, widget.category, widget.wikiDetail),
-                  builder: (context, asyncSnapshot) {
-                    return ListView(
-                      physics: const ClampingScrollPhysics(),
-                      padding: EdgeInsets.zero,
-                      children: [
-                        MainBody(widget: widget),
-                        Container(
-                          width: double.infinity,
-                          height: 470,
-                          decoration: BoxDecoration(
-                              color: Color(0xFFE4E4E4),
-                              border: Border(
-                                  top: BorderSide(
-                                      color: Colors.black, width: 2))),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.only(
-                                    top: 14.0, bottom: 18.0, left: 25),
-                                child: Text("Similar Articles",
-                                    style: GoogleFonts.dmSerifText(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.w500)),
-                              ),
-                              Expanded(
-                                  child: ListView(
-                                scrollDirection: Axis.horizontal,
-                                children: [
-                                  Container(
-                                    width: 25,
-                                  ),
-                                  // Article
-                                  Container(
-                                    margin: EdgeInsets.only(right: 6),
-                                    width: 170,
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Container(
-                                          height: 200,
-                                          width: 170,
-                                          decoration: BoxDecoration(
-                                              color: Color(0xFF9D9D9D),
-                                              borderRadius: BorderRadius.all(
-                                                  Radius.circular(13))),
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              vertical: 7.0),
-                                          child: Text(
-                                              "Lorem ipsum dolor sit amet, ...",
-                                              maxLines: 2,
-                                              style: GoogleFonts.dmSerifText(
-                                                  fontSize: 17,
-                                                  fontWeight: FontWeight.w500)),
-                                        ),
-                                        Text("Source",
-                                            style: GoogleFonts.workSans(
-                                                color: Color(0xFF717171),
-                                                fontSize: 15,
-                                                fontWeight: FontWeight.w500)),
-                                      ],
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting)
+                      return MainBody(widget: widget);
+                    else if (snapshot.hasError == false &&
+                        snapshot.connectionState == ConnectionState.done) {
+                      return ListView(
+                        physics: const ClampingScrollPhysics(),
+                        padding: EdgeInsets.zero,
+                        children: [
+                          MainBody(widget: widget),
+                          Container(
+                            width: double.infinity,
+                            height: 470,
+                            decoration: BoxDecoration(
+                                color: Color(0xFFE4E4E4),
+                                border: Border(
+                                    top: BorderSide(
+                                        color: Colors.black, width: 2))),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      top: 14.0, bottom: 18.0, left: 25),
+                                  child: Text("Similar Articles",
+                                      style: GoogleFonts.dmSerifText(
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.w500)),
+                                ),
+                                Expanded(
+                                    child: ListView(
+                                  scrollDirection: Axis.horizontal,
+                                  children: [
+                                    Container(
+                                      width: 25,
                                     ),
-                                  ),
-                                  Container(
-                                    margin: EdgeInsets.only(right: 5),
-                                    width: 170,
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Container(
-                                          height: 200,
-                                          width: 170,
-                                          decoration: BoxDecoration(
-                                              color: Color(0xFF9D9D9D),
-                                              borderRadius: BorderRadius.all(
-                                                  Radius.circular(13))),
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              vertical: 7.0),
-                                          child: Text(
-                                              "Lorem ipsum dolor sit amet, ...",
-                                              maxLines: 2,
-                                              style: GoogleFonts.dmSerifText(
-                                                  fontSize: 17,
+                                    // Article
+                                    Container(
+                                      margin: EdgeInsets.only(right: 6),
+                                      width: 170,
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Container(
+                                            height: 200,
+                                            width: 170,
+                                            decoration: BoxDecoration(
+                                                color: Color(0xFF9D9D9D),
+                                                borderRadius: BorderRadius.all(
+                                                    Radius.circular(13))),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                vertical: 7.0),
+                                            child: Text(
+                                                "Lorem ipsum dolor sit amet, ...",
+                                                maxLines: 2,
+                                                style: GoogleFonts.dmSerifText(
+                                                    fontSize: 17,
+                                                    fontWeight:
+                                                        FontWeight.w500)),
+                                          ),
+                                          Text("Source",
+                                              style: GoogleFonts.workSans(
+                                                  color: Color(0xFF717171),
+                                                  fontSize: 15,
                                                   fontWeight: FontWeight.w500)),
-                                        ),
-                                        Text("Source",
-                                            style: GoogleFonts.workSans(
-                                                color: Color(0xFF717171),
-                                                fontSize: 15,
-                                                fontWeight: FontWeight.w500)),
-                                      ],
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                  Container(
-                                    margin: EdgeInsets.only(right: 5),
-                                    width: 170,
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Container(
-                                          height: 200,
-                                          width: 170,
-                                          decoration: BoxDecoration(
-                                              color: Color(0xFF9D9D9D),
-                                              borderRadius: BorderRadius.all(
-                                                  Radius.circular(13))),
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              vertical: 7.0),
-                                          child: Text(
-                                              "Lorem ipsum dolor sit amet, ...",
-                                              maxLines: 2,
-                                              style: GoogleFonts.dmSerifText(
-                                                  fontSize: 17,
+                                    Container(
+                                      margin: EdgeInsets.only(right: 5),
+                                      width: 170,
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Container(
+                                            height: 200,
+                                            width: 170,
+                                            decoration: BoxDecoration(
+                                                color: Color(0xFF9D9D9D),
+                                                borderRadius: BorderRadius.all(
+                                                    Radius.circular(13))),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                vertical: 7.0),
+                                            child: Text(
+                                                "Lorem ipsum dolor sit amet, ...",
+                                                maxLines: 2,
+                                                style: GoogleFonts.dmSerifText(
+                                                    fontSize: 17,
+                                                    fontWeight:
+                                                        FontWeight.w500)),
+                                          ),
+                                          Text("Source",
+                                              style: GoogleFonts.workSans(
+                                                  color: Color(0xFF717171),
+                                                  fontSize: 15,
                                                   fontWeight: FontWeight.w500)),
-                                        ),
-                                        Text("Source",
-                                            style: GoogleFonts.workSans(
-                                                color: Color(0xFF717171),
-                                                fontSize: 15,
-                                                fontWeight: FontWeight.w500)),
-                                      ],
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                  Container(
-                                    width: 10,
-                                  )
-                                ],
-                              ))
-                            ],
-                          ),
-                        )
-                      ],
+                                    Container(
+                                      margin: EdgeInsets.only(right: 5),
+                                      width: 170,
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Container(
+                                            height: 200,
+                                            width: 170,
+                                            decoration: BoxDecoration(
+                                                color: Color(0xFF9D9D9D),
+                                                borderRadius: BorderRadius.all(
+                                                    Radius.circular(13))),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                vertical: 7.0),
+                                            child: Text(
+                                                "Lorem ipsum dolor sit amet, ...",
+                                                maxLines: 2,
+                                                style: GoogleFonts.dmSerifText(
+                                                    fontSize: 17,
+                                                    fontWeight:
+                                                        FontWeight.w500)),
+                                          ),
+                                          Text("Source",
+                                              style: GoogleFonts.workSans(
+                                                  color: Color(0xFF717171),
+                                                  fontSize: 15,
+                                                  fontWeight: FontWeight.w500)),
+                                        ],
+                                      ),
+                                    ),
+                                    Container(
+                                      width: 10,
+                                    )
+                                  ],
+                                ))
+                              ],
+                            ),
+                          )
+                        ],
+                      );
+                    }
+                    return Container(
+                      child: Text("Error"),
                     );
                   }),
             ),
@@ -217,7 +230,10 @@ class _DetailPageState extends State<DetailPage> {
               bottom: MediaQuery.of(context).padding.bottom + 15,
               right: 17,
               child: KButton(
-                icon: Icons.macro_off,
+                icon: Icon(
+                  Icons.macro_off,
+                  color: Colors.black,
+                ),
                 onTap: () => print("ge"),
               ),
             ),
@@ -226,8 +242,10 @@ class _DetailPageState extends State<DetailPage> {
               left: 17,
               child: KButton(
                 text: "Open Article",
-                icon: Icons.table_restaurant,
-                onTap: () => print("ge"),
+                icon: SvgPicture.asset(
+                  'images/external_link_icon.svg',
+                ),
+                onTap: () => launchUrl(Uri.parse(widget.url)),
               ),
             ),
           ],
@@ -283,15 +301,11 @@ class MainBody extends StatelessWidget {
                     style: GoogleFonts.workSans(
                         fontSize: 13, fontWeight: FontWeight.w500)),
                 if (widget.date != null)
-                  Text("Last Updated: ${widget.date}",
+                  Text("Date: ${widget.date}",
                       style: GoogleFonts.workSans(
                           fontSize: 13, fontWeight: FontWeight.w500)),
                 if (widget.readTime != null)
                   Text("Read Time: ${widget.readTime}",
-                      style: GoogleFonts.workSans(
-                          fontSize: 13, fontWeight: FontWeight.w500)),
-                if (widget.date != null)
-                  Text("Last Updated: ${widget.date}",
                       style: GoogleFonts.workSans(
                           fontSize: 13, fontWeight: FontWeight.w500)),
                 Padding(padding: EdgeInsets.only(top: 24)),
@@ -305,7 +319,7 @@ class MainBody extends StatelessWidget {
 }
 
 class KButton extends StatefulWidget {
-  final IconData icon;
+  final Widget icon;
   final String text;
   final GestureTapCallback onTap;
   const KButton(
@@ -333,17 +347,11 @@ class _KButtonState extends State<KButton> {
     );
 
     var _child = widget.text == ""
-        ? Icon(
-            widget.icon,
-            color: Colors.black,
-          )
+        ? widget.icon
         : Row(
             spacing: 8,
             children: [
-              Icon(
-                widget.icon,
-                color: Colors.black,
-              ),
+              widget.icon,
               Text("Open Article",
                   style: GoogleFonts.workSans(
                       color: Colors.black,

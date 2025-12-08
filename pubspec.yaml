@@ -40,6 +40,7 @@ dependencies:
   shimmer_animation: ^2.2.2
   http: 
   intl:
+  url_launcher: 
 
 dev_dependencies:
   flutter_test:
@@ -67,6 +68,7 @@ flutter:
   assets:
       - images/middle_icon.svg
       - images/more_icon.svg
+      - images/external_link_icon.svg
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
 
