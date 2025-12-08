@@ -36,7 +36,12 @@ class _SavedPageState extends State<SavedPage> {
               onTap: () {
                 Navigator.of(context)
                     .push(CupertinoPageRoute(builder: (context) {
-                  return DetailPage();
+                  // return DetailPage();
+                  return Container(
+                    width: double.infinity,
+                    height: 200,
+                    margin: EdgeInsets.only(bottom: 50),
+                  );
                 }));
               },
               title:

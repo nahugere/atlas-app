@@ -89,21 +89,35 @@ class _HomePageState extends State<HomePage>
                         height: 100,
                       );
                     }
+                    var i = snapshot.data?[index];
                     return ATile(
                       onTap: () {
                         Navigator.of(context)
                             .push(CupertinoPageRoute(builder: (context) {
-                          return DetailPage();
+                          return DetailPage(
+                            title: i["title"],
+                            category: i["category"],
+                            img: i["img"] == null ? "" : i["img"],
+                            url: i["url"],
+                            source: i["source"],
+                            date: i["date"],
+                            wikiDetail:
+                                i["source"] == "Wikipedia" ? i["id"] : "",
+                            readTime: i["readTime"] == null
+                                ? null
+                                : "${i["readTime"].toStringAsFixed(0)} Min",
+                            description: i["description"] == null
+                                ? null
+                                : i["description"],
+                          );
                         }));
                       },
-                      title: snapshot.data?[index]["title"],
-                      readTime: snapshot.data?[index]["readTime"] == null
+                      title: i["title"],
+                      readTime: i["readTime"] == null
                           ? ""
-                          : "${snapshot.data?[index]["readTime"].toStringAsFixed(0)} Min read",
-                      source: snapshot.data?[index]["source"],
-                      img: snapshot.data?[index]["img"] == null
-                          ? ""
-                          : snapshot.data?[index]["img"],
+                          : "${i["readTime"].toStringAsFixed(0)} Min read",
+                      source: i["source"],
+                      img: i["img"] == null ? "" : i["img"],
                     );
                   },
                   childCount: snapshot.data?.length,
