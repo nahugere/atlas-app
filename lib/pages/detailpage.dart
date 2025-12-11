@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shimmer_animation/shimmer_animation.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class DetailPage extends StatefulWidget {
@@ -70,153 +71,17 @@ class _DetailPageState extends State<DetailPage> {
                   future: _webService.getDetailFeed(
                       widget.source, widget.category, widget.wikiDetail),
                   builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting)
-                      return MainBody(widget: widget);
-                    else if (snapshot.hasError == false &&
+                    // TODO: Error Handling
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return MainBodyFlicker(
+                        widget: widget,
+                        description: widget.description,
+                      );
+                    } else if (snapshot.hasError == false &&
                         snapshot.connectionState == ConnectionState.done) {
-                      return ListView(
-                        physics: const ClampingScrollPhysics(),
-                        padding: EdgeInsets.zero,
-                        children: [
-                          MainBody(widget: widget),
-                          Container(
-                            width: double.infinity,
-                            height: 470,
-                            decoration: BoxDecoration(
-                                color: Color(0xFFE4E4E4),
-                                border: Border(
-                                    top: BorderSide(
-                                        color: Colors.black, width: 2))),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                      top: 14.0, bottom: 18.0, left: 25),
-                                  child: Text("Similar Articles",
-                                      style: GoogleFonts.dmSerifText(
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.w500)),
-                                ),
-                                Expanded(
-                                    child: ListView(
-                                  scrollDirection: Axis.horizontal,
-                                  children: [
-                                    Container(
-                                      width: 25,
-                                    ),
-                                    // Article
-                                    Container(
-                                      margin: EdgeInsets.only(right: 6),
-                                      width: 170,
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Container(
-                                            height: 200,
-                                            width: 170,
-                                            decoration: BoxDecoration(
-                                                color: Color(0xFF9D9D9D),
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(13))),
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.symmetric(
-                                                vertical: 7.0),
-                                            child: Text(
-                                                "Lorem ipsum dolor sit amet, ...",
-                                                maxLines: 2,
-                                                style: GoogleFonts.dmSerifText(
-                                                    fontSize: 17,
-                                                    fontWeight:
-                                                        FontWeight.w500)),
-                                          ),
-                                          Text("Source",
-                                              style: GoogleFonts.workSans(
-                                                  color: Color(0xFF717171),
-                                                  fontSize: 15,
-                                                  fontWeight: FontWeight.w500)),
-                                        ],
-                                      ),
-                                    ),
-                                    Container(
-                                      margin: EdgeInsets.only(right: 5),
-                                      width: 170,
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Container(
-                                            height: 200,
-                                            width: 170,
-                                            decoration: BoxDecoration(
-                                                color: Color(0xFF9D9D9D),
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(13))),
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.symmetric(
-                                                vertical: 7.0),
-                                            child: Text(
-                                                "Lorem ipsum dolor sit amet, ...",
-                                                maxLines: 2,
-                                                style: GoogleFonts.dmSerifText(
-                                                    fontSize: 17,
-                                                    fontWeight:
-                                                        FontWeight.w500)),
-                                          ),
-                                          Text("Source",
-                                              style: GoogleFonts.workSans(
-                                                  color: Color(0xFF717171),
-                                                  fontSize: 15,
-                                                  fontWeight: FontWeight.w500)),
-                                        ],
-                                      ),
-                                    ),
-                                    Container(
-                                      margin: EdgeInsets.only(right: 5),
-                                      width: 170,
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Container(
-                                            height: 200,
-                                            width: 170,
-                                            decoration: BoxDecoration(
-                                                color: Color(0xFF9D9D9D),
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(13))),
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.symmetric(
-                                                vertical: 7.0),
-                                            child: Text(
-                                                "Lorem ipsum dolor sit amet, ...",
-                                                maxLines: 2,
-                                                style: GoogleFonts.dmSerifText(
-                                                    fontSize: 17,
-                                                    fontWeight:
-                                                        FontWeight.w500)),
-                                          ),
-                                          Text("Source",
-                                              style: GoogleFonts.workSans(
-                                                  color: Color(0xFF717171),
-                                                  fontSize: 15,
-                                                  fontWeight: FontWeight.w500)),
-                                        ],
-                                      ),
-                                    ),
-                                    Container(
-                                      width: 10,
-                                    )
-                                  ],
-                                ))
-                              ],
-                            ),
-                          )
-                        ],
+                      return MainBodyFlicker(
+                        widget: widget,
+                        description: widget.description,
                       );
                     }
                     return Container(
@@ -253,9 +118,121 @@ class _DetailPageState extends State<DetailPage> {
   }
 }
 
+class MainBodyFlicker extends StatelessWidget {
+  final String? description;
+  final DetailPage widget;
+  const MainBodyFlicker({
+    super.key,
+    this.description,
+    required this.widget,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView(
+      physics: const ClampingScrollPhysics(),
+      padding: EdgeInsets.zero,
+      children: [
+        MainBody(
+          widget: widget,
+          description: widget.description,
+        ),
+        Container(
+          width: double.infinity,
+          height: 470,
+          decoration: BoxDecoration(
+              color: Color(0xFFE4E4E4),
+              border: Border(top: BorderSide(color: Colors.black, width: 2))),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding:
+                    const EdgeInsets.only(top: 14.0, bottom: 18.0, left: 25),
+                child: Shimmer(
+                  color: Colors.grey.shade600,
+                  child: Container(
+                    width: 200,
+                    height: 30,
+                    decoration: BoxDecoration(
+                        color: Colors.grey.shade400,
+                        borderRadius: BorderRadius.all(Radius.circular(5))),
+                  ),
+                ),
+              ),
+              Expanded(
+                  child: ListView(
+                scrollDirection: Axis.horizontal,
+                children: [
+                  Container(
+                    width: 25,
+                  ),
+                  for (var i = 0; i <= 3; i++)
+                    Container(
+                      margin: EdgeInsets.only(right: 6),
+                      width: 170,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            height: 200,
+                            width: 170,
+                            decoration: BoxDecoration(
+                                color: Colors.grey.shade400,
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(13))),
+                          ),
+                          Padding(
+                            padding:
+                                const EdgeInsets.only(top: 10.0, left: 5.0),
+                            child: Shimmer(
+                              color: Colors.grey.shade600,
+                              child: Container(
+                                height: 17,
+                                width: 150,
+                                decoration: BoxDecoration(
+                                    color: Colors.grey.shade400,
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(5))),
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding:
+                                const EdgeInsets.only(top: 10.0, left: 5.0),
+                            child: Shimmer(
+                              color: Colors.grey.shade600,
+                              child: Container(
+                                height: 17,
+                                width: 100,
+                                decoration: BoxDecoration(
+                                    color: Colors.grey.shade400,
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(5))),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  Container(
+                    width: 10,
+                  )
+                ],
+              ))
+            ],
+          ),
+        )
+      ],
+    );
+  }
+}
+
 class MainBody extends StatelessWidget {
+  final String? description;
   const MainBody({
     super.key,
+    this.description,
     required this.widget,
   });
 
@@ -290,12 +267,13 @@ class MainBody extends StatelessWidget {
               spacing: 3,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(widget.description!,
-                    textAlign: TextAlign.justify,
-                    style: GoogleFonts.workSans(
-                        color: Color(0xFF717171),
-                        fontSize: 15,
-                        fontWeight: FontWeight.w500)),
+                if (description != null)
+                  Text(description!,
+                      textAlign: TextAlign.justify,
+                      style: GoogleFonts.workSans(
+                          color: Color(0xFF717171),
+                          fontSize: 15,
+                          fontWeight: FontWeight.w500)),
                 Padding(padding: EdgeInsets.only(top: 10)),
                 Text("Source: ${widget.source}",
                     style: GoogleFonts.workSans(

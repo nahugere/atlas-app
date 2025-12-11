@@ -101,8 +101,9 @@ class _HomePageState extends State<HomePage>
                             url: i["url"],
                             source: i["source"],
                             date: i["date"],
-                            wikiDetail:
-                                i["source"] == "Wikipedia" ? i["id"] : "",
+                            wikiDetail: i["source"] == "Wikipedia"
+                                ? i["id"].toString()
+                                : "",
                             readTime: i["readTime"] == null
                                 ? null
                                 : "${i["readTime"].toStringAsFixed(0)} Min",

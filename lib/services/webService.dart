@@ -50,6 +50,8 @@ class WebService {
       String src, String category, String? wikiDetail) async {
     final uri = Uri.parse(
         "http://localhost:8000/a/detail/?s=${src}&category=${category}&wd=${wikiDetail}");
+    print(
+        "http://localhost:8000/a/detail/?s=${src}&category=${category}&wd=${wikiDetail}");
     http.Response response = await http.get(uri);
 
     if (response.statusCode == 200) {
