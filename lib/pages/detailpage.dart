@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:atlas/services/webService.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -79,9 +81,153 @@ class _DetailPageState extends State<DetailPage> {
                       );
                     } else if (snapshot.hasError == false &&
                         snapshot.connectionState == ConnectionState.done) {
-                      return MainBodyFlicker(
-                        widget: widget,
-                        description: widget.description,
+                      Map? data = snapshot.data;
+                      return ListView(
+                        physics: const ClampingScrollPhysics(),
+                        padding: EdgeInsets.zero,
+                        children: [
+                          MainBody(
+                            widget: widget,
+                            description: widget.description ??
+                                data?["detail"]["description"],
+                          ),
+                          Container(
+                            width: double.infinity,
+                            height: 470,
+                            decoration: BoxDecoration(
+                                color: Color(0xFFE4E4E4),
+                                border: Border(
+                                    top: BorderSide(
+                                        color: Colors.black, width: 2))),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                for (var i in data?["articles"])
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.only(
+                                              top: 14.0,
+                                              bottom: 18.0,
+                                              left: 25),
+                                          child: Text(i["name"],
+                                              style: GoogleFonts.dmSerifText(
+                                                  fontSize: 20,
+                                                  fontWeight: FontWeight.w500)),
+                                        ),
+                                        Expanded(
+                                            child: ListView(
+                                          scrollDirection: Axis.horizontal,
+                                          children: [
+                                            Container(
+                                              width: 25,
+                                            ),
+                                            // Article
+                                            for (var j in i["articles"])
+                                              GestureDetector(
+                                                onTap: () {
+                                                  Navigator.push(context,
+                                                      CupertinoPageRoute(
+                                                          builder: (builder) {
+                                                    return DetailPage(
+                                                      title: j["title"],
+                                                      category: j["category"],
+                                                      img: j["img"] == null
+                                                          ? ""
+                                                          : j["img"],
+                                                      url: j["url"],
+                                                      source: j["source"],
+                                                      date: j["date"],
+                                                      wikiDetail: j["source"] ==
+                                                              "Wikipedia"
+                                                          ? j["id"].toString()
+                                                          : "",
+                                                      readTime: j["readTime"] ==
+                                                              null
+                                                          ? null
+                                                          : "${j["readTime"].toStringAsFixed(0)} Min",
+                                                      description:
+                                                          j["description"] ==
+                                                                  null
+                                                              ? null
+                                                              : j["description"],
+                                                    );
+                                                  }));
+                                                },
+                                                child: Container(
+                                                  margin: EdgeInsets.only(
+                                                      right: 10),
+                                                  width: 170,
+                                                  child: Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      Container(
+                                                        height: 200,
+                                                        width: 170,
+                                                        decoration: BoxDecoration(
+                                                            image: DecorationImage(
+                                                                image:
+                                                                    NetworkImage(j[
+                                                                        "img"]),
+                                                                fit: BoxFit
+                                                                    .cover),
+                                                            color: Color(
+                                                                0xFF9D9D9D),
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .all(Radius
+                                                                        .circular(
+                                                                            13))),
+                                                      ),
+                                                      Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .symmetric(
+                                                                vertical: 7.0),
+                                                        child: Text(j["title"],
+                                                            maxLines: 2,
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
+                                                            style: GoogleFonts
+                                                                .dmSerifText(
+                                                                    fontSize:
+                                                                        15,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w500)),
+                                                      ),
+                                                      Text(j["source"],
+                                                          style: GoogleFonts
+                                                              .workSans(
+                                                                  color: Color(
+                                                                      0xFF717171),
+                                                                  fontSize: 13,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w500)),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+
+                                            Container(
+                                              width: 10,
+                                            )
+                                          ],
+                                        ))
+                                      ],
+                                    ),
+                                  ),
+                              ],
+                            ),
+                          )
+                        ],
                       );
                     }
                     return Container(
@@ -91,6 +237,34 @@ class _DetailPageState extends State<DetailPage> {
             ),
 
             // Floating action button
+            Positioned(
+                bottom: 0,
+                right: 0,
+                left: 0,
+                child: Container(
+                  height: 120,
+                  decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                          begin: AlignmentGeometry.topCenter,
+                          end: AlignmentGeometry.bottomCenter,
+                          colors: [
+                        const Color.fromARGB(0, 0, 0, 0),
+                        const Color.fromARGB(130, 0, 0, 0)
+                      ])),
+                )),
+            Positioned(
+                bottom: 0,
+                right: 0,
+                left: 0,
+                child: ClipRRect(
+                  child: BackdropFilter(
+                    filter: ImageFilter.blur(sigmaX: 1.0, sigmaY: 1.0),
+                    child: Container(
+                      height: 50,
+                      color: const Color.fromARGB(0, 0, 0, 0),
+                    ),
+                  ),
+                )),
             Positioned(
               bottom: MediaQuery.of(context).padding.bottom + 15,
               right: 17,
@@ -169,7 +343,7 @@ class MainBodyFlicker extends StatelessWidget {
                   ),
                   for (var i = 0; i <= 3; i++)
                     Container(
-                      margin: EdgeInsets.only(right: 6),
+                      margin: EdgeInsets.only(right: 9),
                       width: 170,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
