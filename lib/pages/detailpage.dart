@@ -249,7 +249,7 @@ class _DetailPageState extends State<DetailPage> {
                           end: AlignmentGeometry.bottomCenter,
                           colors: [
                         const Color.fromARGB(0, 0, 0, 0),
-                        const Color.fromARGB(130, 0, 0, 0)
+                        const Color.fromARGB(70, 0, 0, 0)
                       ])),
                 )),
             Positioned(
