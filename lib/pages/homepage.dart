@@ -1,4 +1,5 @@
 import 'package:atlas/pages/detailpage.dart';
+import 'package:atlas/pages/pages.dart';
 import 'package:atlas/services/webService.dart';
 import 'package:atlas/widgets/widgets.dart';
 import 'package:flutter/cupertino.dart';
@@ -17,8 +18,10 @@ class _HomePageState extends State<HomePage>
     with AutomaticKeepAliveClientMixin<HomePage> {
   @override
   bool get wantKeepAlive => true;
+
   final WebService _webService = WebService();
-  int _cIndex = 0;
+  final TextEditingController searchController = TextEditingController();
+  final FocusNode focusNode = FocusNode();
   final List<String> _categories = [
     "All",
     "Technology",
@@ -29,19 +32,27 @@ class _HomePageState extends State<HomePage>
     "Sports",
     "Art"
   ];
+  int _cIndex = 0;
+
+  @override
+  void dispose() {
+    searchController.dispose();
+    focusNode.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return CustomScrollView(
       slivers: [
-        HeroMode(
-          enabled: false,
-          child: SliverPersistentHeader(
-            delegate: HeaderDelegate(
-                minExtent: MediaQuery.of(context).padding.top + 95,
-                maxExtent: MediaQuery.of(context).padding.top + 150),
-            pinned: true,
-          ),
+        SliverPersistentHeader(
+          delegate: HeaderDelegate(
+              searchController: searchController,
+              focusNode: focusNode,
+              minExtent: MediaQuery.of(context).padding.top + 95,
+              maxExtent: MediaQuery.of(context).padding.top + 150),
+          pinned: true,
         ),
         SliverToBoxAdapter(
           child: Container(
@@ -135,9 +146,14 @@ class _HomePageState extends State<HomePage>
 class HeaderDelegate extends SliverPersistentHeaderDelegate {
   final double minExtent;
   final double maxExtent;
-  TextEditingController _searchController = TextEditingController();
+  final TextEditingController searchController;
+  final FocusNode focusNode;
 
-  HeaderDelegate({required this.minExtent, required this.maxExtent});
+  HeaderDelegate(
+      {required this.minExtent,
+      required this.maxExtent,
+      required this.searchController,
+      required this.focusNode});
 
   @override
   Widget build(BuildContext context, double shrinkOffset, bool overlaps) {
@@ -174,7 +190,7 @@ class HeaderDelegate extends SliverPersistentHeaderDelegate {
                                   color: Color(0xFF727272)),
                             ),
                             Text(
-                              "Discover articles",
+                              "Discover Articles",
                               style: GoogleFonts.dmSerifText(
                                   height: 1.2,
                                   fontSize: 34,
@@ -190,8 +206,24 @@ class HeaderDelegate extends SliverPersistentHeaderDelegate {
                       ],
                     ),
                   ),
-                  ASearchBar(
-                    controller: _searchController,
+                  GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onTap: () {
+                      Navigator.of(context).push(
+                        CupertinoPageRoute(
+                          builder: (_) => SearchPage(),
+                        ),
+                      );
+                    },
+                    child: AbsorbPointer(
+                      child: Hero(
+                        tag: 'searchHero',
+                        child: ASearchBar(
+                          controller: searchController,
+                          focusNode: focusNode,
+                        ),
+                      ),
+                    ),
                   )
                 ],
               ),
@@ -207,7 +239,7 @@ class HeaderDelegate extends SliverPersistentHeaderDelegate {
                 padding: EdgeInsets.only(
                     top: 4.0 + MediaQuery.of(context).padding.top),
                 child: Text(
-                  "Discover articles",
+                  "Discover Articles",
                   style: GoogleFonts.dmSerifText(
                       fontSize: 19, fontWeight: FontWeight.w500),
                 ),
@@ -222,30 +254,3 @@ class HeaderDelegate extends SliverPersistentHeaderDelegate {
   @override
   bool shouldRebuild(SliverPersistentHeaderDelegate oldDelegate) => true;
 }
-
-
-// return ListView.builder(
-//                     itemCount: snapshot.data.length,
-//                     itemBuilder: (context, index) {},
-//                   );
-
-//                   (
-//                     key: PageStorageKey('homePage'),
-//                     delegate: SliverChildBuilderDelegate(
-//                       (context, index) {
-//                         return ATile(
-//                           onTap: () {
-//                             Navigator.of(context)
-//                                 .push(CupertinoPageRoute(builder: (context) {
-//                               return DetailPage();
-//                             }));
-//                           },
-//                           title:
-//                               "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum ipsum risus asdad",
-//                           datePublished: "August 19, 2025",
-//                           author: "Author $index",
-//                         );
-//                       },
-//                       childCount: 30,
-//                     ),
-//                   );

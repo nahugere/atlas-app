@@ -71,7 +71,13 @@ class _ATabBarState extends State<ATabBar> {
 
 class ASearchBar extends StatelessWidget {
   final TextEditingController controller;
-  const ASearchBar({super.key, required this.controller});
+  final FocusNode focusNode;
+  final bool enabled;
+  const ASearchBar(
+      {super.key,
+      required this.controller,
+      required this.focusNode,
+      this.enabled = false});
 
   @override
   Widget build(BuildContext context) {
@@ -98,6 +104,8 @@ class ASearchBar extends StatelessWidget {
                   border: Border.all(width: 1.5, color: Colors.black),
                   borderRadius: BorderRadius.all(Radius.circular(4))),
               child: CupertinoTextField(
+                enabled: enabled,
+                focusNode: focusNode,
                 padding: EdgeInsets.only(left: 8, bottom: 5),
                 controller: controller,
                 prefix: Padding(
@@ -269,6 +277,62 @@ class ATile extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class KButton extends StatefulWidget {
+  final Widget icon;
+  final String text;
+  final GestureTapCallback onTap;
+  const KButton(
+      {super.key, required this.icon, this.text = "", required this.onTap});
+
+  @override
+  State<KButton> createState() => _KButtonState();
+}
+
+class _KButtonState extends State<KButton> {
+  @override
+  Widget build(BuildContext context) {
+    var boxDecoration = BoxDecoration(
+      borderRadius: BorderRadius.all(Radius.circular(50)),
+      color: Colors.white,
+      border: Border.all(width: 2, color: Colors.black),
+      boxShadow: [
+        BoxShadow(
+          color: Colors.black,
+          spreadRadius: 0,
+          blurRadius: 0,
+          offset: Offset(4, 4), // changes position of shadow
+        ),
+      ],
+    );
+
+    var _child = widget.text == ""
+        ? widget.icon
+        : Row(
+            spacing: 8,
+            children: [
+              widget.icon,
+              Text(widget.text,
+                  style: GoogleFonts.workSans(
+                      color: Colors.black,
+                      fontSize: 15,
+                      fontWeight: FontWeight.w500))
+            ],
+          );
+
+    return GestureDetector(
+      onTap: widget.onTap,
+      child: widget.text == ""
+          ? Container(
+              width: 56, height: 56, decoration: boxDecoration, child: _child)
+          : Container(
+              padding: EdgeInsets.symmetric(horizontal: 13),
+              height: 56,
+              decoration: boxDecoration,
+              child: _child),
     );
   }
 }

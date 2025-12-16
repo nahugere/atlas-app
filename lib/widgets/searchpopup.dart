@@ -49,7 +49,9 @@ class _SearchPopUpState extends State<SearchPopUp> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 17.0),
                 child: ASearchBar(
+                  enabled: true,
                   controller: TextEditingController(),
+                  focusNode: FocusNode(),
                 ),
               ),
 

@@ -46,6 +46,17 @@ class WebService {
     }
   }
 
+  Future<List<String>> getSuggestions(String query) async {
+    final url = Uri.parse(
+        'https://en.wikipedia.org/w/api.php?action=opensearch&format=json&search=$query');
+    final response = await http.get(url);
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      return List<String>.from(data[1]);
+    }
+    return [];
+  }
+
   Future<Map> getDetailFeed(
       String src, String category, String? wikiDetail) async {
     final uri = Uri.parse(

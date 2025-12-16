@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:atlas/services/webService.dart';
+import 'package:atlas/widgets/widgets.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -466,62 +467,6 @@ class MainBody extends StatelessWidget {
           )
         ],
       ),
-    );
-  }
-}
-
-class KButton extends StatefulWidget {
-  final Widget icon;
-  final String text;
-  final GestureTapCallback onTap;
-  const KButton(
-      {super.key, required this.icon, this.text = "", required this.onTap});
-
-  @override
-  State<KButton> createState() => _KButtonState();
-}
-
-class _KButtonState extends State<KButton> {
-  @override
-  Widget build(BuildContext context) {
-    var boxDecoration = BoxDecoration(
-      borderRadius: BorderRadius.all(Radius.circular(50)),
-      color: Colors.white,
-      border: Border.all(width: 2, color: Colors.black),
-      boxShadow: [
-        BoxShadow(
-          color: Colors.black,
-          spreadRadius: 0,
-          blurRadius: 0,
-          offset: Offset(4, 4), // changes position of shadow
-        ),
-      ],
-    );
-
-    var _child = widget.text == ""
-        ? widget.icon
-        : Row(
-            spacing: 8,
-            children: [
-              widget.icon,
-              Text("Open Article",
-                  style: GoogleFonts.workSans(
-                      color: Colors.black,
-                      fontSize: 15,
-                      fontWeight: FontWeight.w500))
-            ],
-          );
-
-    return GestureDetector(
-      onTap: widget.onTap,
-      child: widget.text == ""
-          ? Container(
-              width: 56, height: 56, decoration: boxDecoration, child: _child)
-          : Container(
-              padding: EdgeInsets.symmetric(horizontal: 13),
-              height: 56,
-              decoration: boxDecoration,
-              child: _child),
     );
   }
 }
