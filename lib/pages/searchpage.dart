@@ -18,13 +18,22 @@ class _SearchPageState extends State<SearchPage> {
   final FocusNode focusNode = FocusNode();
   final WebService _webService = WebService();
 
+  List<String> recs = [];
   bool showAIButton = false;
+  bool loading = false;
   String searchQuery = "";
 
   @override
   void initState() {
     super.initState();
-    // searchCont
+    // searchController.addListener(() async {
+    //   if (searchController.text != "" && searchQuery == "") {
+    //     var r = await _webService.getSuggestions(searchController.text);
+    //     setState(() {
+    //       recs = r;
+    //     });
+    //   }
+    // });
   }
 
   @override
@@ -64,49 +73,127 @@ class _SearchPageState extends State<SearchPage> {
             ),
           ),
         ),
-        child: Stack(
+        child: Column(
           children: [
-            Column(
-              children: [
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 15.0, vertical: 0),
-                  child: Hero(
-                    tag: 'searchHero',
-                    child: ASearchBar(
-                      controller: searchController,
-                      focusNode: focusNode,
-                      enabled: true,
-                    ),
-                  ),
+            // Search bar
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 15.0, vertical: 0),
+              child: Hero(
+                tag: 'searchHero',
+                child: ASearchBar(
+                  controller: searchController,
+                  focusNode: focusNode,
+                  enabled: true,
+                  onChanged: (e) async {
+                    List<String> r = [];
+                    if (e != "") {
+                      r = await _webService.getSuggestions(e!);
+                    }
+                    setState(() {
+                      recs = r;
+                      if (searchQuery != "") {
+                        searchQuery = "";
+                      }
+                    });
+                  },
                 ),
-                if (searchQuery == "")
-                  Expanded(
-                      child: FutureBuilder(
-                          future:
-                              _webService.getSuggestions(searchController.text),
-                          builder: (context, snapshot) {
-                            if (snapshot.connectionState ==
-                                ConnectionState.done) {
-                              return ListView(
-                                children: [
-                                  for (var i in snapshot.data!)
-                                    Container(
-                                      padding: EdgeInsets.symmetric(
-                                          vertical: 20, horizontal: 15),
-                                      child: Text(i),
-                                    )
-                                ],
-                              );
-                            }
-                            return Text("Start searching man");
-                          }))
-              ],
+              ),
             ),
+
+            // Display
+            Expanded(
+              child: ListView(
+                children: [
+                  if (searchQuery == "" && recs.isNotEmpty)
+                    for (var i in recs)
+                      SuggestionWidget(i, onTap: () {
+                        setState(() {
+                          searchQuery = i;
+                          searchController.text = i;
+                          loading = true;
+                          focusNode.unfocus();
+                        });
+                      }),
+                  if (searchQuery != "")
+                    FutureBuilder(
+                        future: _webService.getFeed("Technology"),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return Column(
+                              children: [
+                                for (var i = 0; i <= 5; i++) ATileShimmer()
+                              ],
+                            );
+                          }
+                          return Text("ge");
+                        })
+                ],
+              ),
+            ),
+
+            // if (searchQuery == "" && searchController.text != "") Container()
+            // Expanded(
+            //     child: FutureBuilder(
+            //         future:
+            //             _webService.getSuggestions(searchController.text),
+            //         builder: (context, snapshot) {
+            //           if (snapshot.connectionState ==
+            //               ConnectionState.done) {
+            //             return ListView(
+            //               children: [
+            //                 for (var i in snapshot.data!)
+            //                   Container(
+            //                     padding: EdgeInsets.symmetric(
+            //                         vertical: 20, horizontal: 15),
+            //                     child: Text(i),
+            //                   )
+            //               ],
+            //             );
+            //           }
+            //           return Text("Start searching man");
+            //         }))
+
+            // Search with AI button
             if (showAIButton)
               Positioned(bottom: 0, left: 0, right: 0, child: AISearch())
           ],
         ));
+  }
+}
+
+class SuggestionWidget extends StatefulWidget {
+  final String suggestion;
+  final Function onTap;
+  const SuggestionWidget(this.suggestion, {super.key, required this.onTap});
+
+  @override
+  State<SuggestionWidget> createState() => _SuggestionWidgetState();
+}
+
+class _SuggestionWidgetState extends State<SuggestionWidget> {
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+        onTap: () => widget.onTap(),
+        child: Container(
+            width: double.infinity,
+            margin: EdgeInsets.only(left: 17),
+            padding: EdgeInsets.only(left: 15, right: 17, bottom: 15, top: 15),
+            decoration: BoxDecoration(
+                border:
+                    Border(bottom: BorderSide(width: 2, color: Colors.black))),
+            child: Row(
+              children: [
+                Expanded(child: Text(widget.suggestion)),
+                Icon(
+                  CupertinoIcons.arrow_up_left_circle_fill,
+                  size: 15,
+                  color: Colors.black,
+                )
+              ],
+            )));
   }
 }
 

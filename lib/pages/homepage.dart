@@ -219,6 +219,7 @@ class HeaderDelegate extends SliverPersistentHeaderDelegate {
                       child: Hero(
                         tag: 'searchHero',
                         child: ASearchBar(
+                          onChanged: (e) => e,
                           controller: searchController,
                           focusNode: focusNode,
                         ),

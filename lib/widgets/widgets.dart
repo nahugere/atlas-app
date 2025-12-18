@@ -71,12 +71,14 @@ class _ATabBarState extends State<ATabBar> {
 
 class ASearchBar extends StatelessWidget {
   final TextEditingController controller;
+  final Function(String?) onChanged;
   final FocusNode focusNode;
   final bool enabled;
   const ASearchBar(
       {super.key,
       required this.controller,
       required this.focusNode,
+      required this.onChanged,
       this.enabled = false});
 
   @override
@@ -104,10 +106,29 @@ class ASearchBar extends StatelessWidget {
                   border: Border.all(width: 1.5, color: Colors.black),
                   borderRadius: BorderRadius.all(Radius.circular(4))),
               child: CupertinoTextField(
+                onChanged: (v) => onChanged(v),
+                keyboardType: TextInputType.webSearch,
+                onSubmitted: (v) => print(v),
                 enabled: enabled,
                 focusNode: focusNode,
                 padding: EdgeInsets.only(left: 8, bottom: 5),
                 controller: controller,
+                suffix: enabled
+                    ? GestureDetector(
+                        onTap: () {
+                          controller.clear();
+                          focusNode.unfocus();
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.only(right: 7.0),
+                          child: Icon(
+                            CupertinoIcons.xmark,
+                            color: Colors.black,
+                            size: 15,
+                          ),
+                        ),
+                      )
+                    : Container(),
                 prefix: Padding(
                   padding: const EdgeInsets.only(left: 10.0),
                   child: Icon(
