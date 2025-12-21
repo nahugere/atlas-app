@@ -117,7 +117,7 @@ class _SearchPageState extends State<SearchPage> {
                       }),
                   if (searchQuery != "")
                     FutureBuilder(
-                        future: _webService.getFeed("Technology"),
+                        future: _webService.search(searchQuery),
                         builder: (context, snapshot) {
                           if (snapshot.connectionState ==
                               ConnectionState.waiting) {
@@ -126,7 +126,107 @@ class _SearchPageState extends State<SearchPage> {
                                 for (var i = 0; i <= 5; i++) ATileShimmer()
                               ],
                             );
+                          } else if (snapshot.connectionState ==
+                                  ConnectionState.done &&
+                              snapshot.hasData == true) {
+                            return Column(
+                              children: [
+                                if (snapshot.data?["articles"] != [])
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Text("Articles",
+                                          style: GoogleFonts.workSans(
+                                            fontSize: 14,
+                                          )),
+                                      for (var i in snapshot.data?["articles"])
+                                        ATile(
+                                          onTap: () {
+                                            Navigator.of(context).push(
+                                                CupertinoPageRoute(
+                                                    builder: (context) {
+                                              return DetailPage(
+                                                title: i["title"],
+                                                category: i["category"],
+                                                img: i["img"] == null
+                                                    ? ""
+                                                    : i["img"],
+                                                url: i["url"],
+                                                source: i["source"],
+                                                date: i["date"],
+                                                wikiDetail:
+                                                    i["source"] == "Wikipedia"
+                                                        ? i["id"].toString()
+                                                        : "",
+                                                readTime: i["readTime"] == null
+                                                    ? null
+                                                    : "${i["readTime"].toStringAsFixed(0)} Min",
+                                                description:
+                                                    i["description"] == null
+                                                        ? null
+                                                        : i["description"],
+                                              );
+                                            }));
+                                          },
+                                          title: i["title"],
+                                          readTime: i["readTime"] == null
+                                              ? ""
+                                              : "${i["readTime"].toStringAsFixed(0)} Min read",
+                                          source: i["source"],
+                                          img: i["img"] == null ? "" : i["img"],
+                                        )
+                                    ],
+                                  ),
+                                if (snapshot.data?["news"] != [])
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Text("News",
+                                          style: GoogleFonts.workSans(
+                                            fontSize: 14,
+                                          )),
+                                      for (var i in snapshot.data?["news"])
+                                        ATile(
+                                          onTap: () {
+                                            Navigator.of(context).push(
+                                                CupertinoPageRoute(
+                                                    builder: (context) {
+                                              return DetailPage(
+                                                title: i["title"],
+                                                category: i["category"],
+                                                img: i["img"] == null
+                                                    ? ""
+                                                    : i["img"],
+                                                url: i["url"],
+                                                source: i["source"],
+                                                date: i["date"],
+                                                wikiDetail:
+                                                    i["source"] == "Wikipedia"
+                                                        ? i["id"].toString()
+                                                        : "",
+                                                readTime: i["readTime"] == null
+                                                    ? null
+                                                    : "${i["readTime"].toStringAsFixed(0)} Min",
+                                                description:
+                                                    i["description"] == null
+                                                        ? null
+                                                        : i["description"],
+                                              );
+                                            }));
+                                          },
+                                          title: i["title"],
+                                          readTime: i["readTime"] == null
+                                              ? ""
+                                              : "${i["readTime"].toStringAsFixed(0)} Min read",
+                                          source: i["source"],
+                                          img: i["img"] == null ? "" : i["img"],
+                                        )
+                                    ],
+                                  ),
+                              ],
+                            );
                           }
+
                           return Text("ge");
                         })
                 ],
@@ -183,7 +283,7 @@ class _SuggestionWidgetState extends State<SuggestionWidget> {
             padding: EdgeInsets.only(left: 15, right: 17, bottom: 15, top: 15),
             decoration: BoxDecoration(
                 border:
-                    Border(bottom: BorderSide(width: 2, color: Colors.black))),
+                    Border(bottom: BorderSide(width: 1, color: Colors.black))),
             child: Row(
               children: [
                 Expanded(child: Text(widget.suggestion)),

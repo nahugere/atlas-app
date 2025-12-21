@@ -57,11 +57,21 @@ class WebService {
     return [];
   }
 
+  Future<Map> search(String query) async {
+    final url = Uri.parse("http://localhost:8000/a/search/?search=${query}");
+    final response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      var jsonData = json.decode(response.body);
+      return jsonData;
+    } else {
+      return {};
+    }
+  }
+
   Future<Map> getDetailFeed(
       String src, String category, String? wikiDetail) async {
     final uri = Uri.parse(
-        "http://localhost:8000/a/detail/?s=${src}&category=${category}&wd=${wikiDetail}");
-    print(
         "http://localhost:8000/a/detail/?s=${src}&category=${category}&wd=${wikiDetail}");
     http.Response response = await http.get(uri);
 

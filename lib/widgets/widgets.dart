@@ -58,11 +58,11 @@ class _ATabBarState extends State<ATabBar> {
                   bottom: widget.selected
                       ? BorderSide(color: Color(0xFF1D7D53), width: 2)
                       : BorderSide.none)),
-          margin: EdgeInsets.only(left: 10, right: 10, bottom: 9),
+          margin: EdgeInsets.only(left: 10, right: 10, bottom: 11),
           child: Text(
             widget.val,
             style: GoogleFonts.workSans(
-                fontSize: 15,
+                fontSize: 14,
                 color: widget.selected ? Color(0xFF1D7D53) : Color(0xFF727272)),
           )),
     );
